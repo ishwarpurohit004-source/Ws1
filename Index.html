@@ -1,0 +1,3369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WS Mod Menu — Premium</title>
+    <style>
+        /* ─────────────── RESET & BASE ─────────────── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg-primary: #0b0e1a;
+            --bg-secondary: #111624;
+            --bg-card: #1a1f2e;
+            --bg-input: #0f1320;
+            --text-primary: #f0f2f8;
+            --text-secondary: #8892b0;
+            --text-muted: #5a6480;
+            --accent: #ffd866;
+            --accent-dark: #f5a623;
+            --accent-glow: rgba(255, 216, 102, 0.15);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --transition: 0.25s ease;
+            --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+            /* Background settings */
+            --bg-page: var(--bg-primary);
+            --bg-page-secondary: var(--bg-secondary);
+            --bg-gradient: none;
+            --bg-image: none;
+            --bg-overlay: rgba(11, 14, 26, 0.85);
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background 0.6s ease;
+            position: relative;
+        }
+        /* Background layers */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: var(--bg-page);
+            background-image: var(--bg-gradient), var(--bg-image);
+            background-size: cover, cover;
+            background-position: center, center;
+            transition: all 0.6s ease;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: var(--bg-overlay);
+            transition: all 0.6s ease;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        img {
+            max-width: 100%;
+            display: block;
+        }
+        button,
+        input,
+        select,
+        textarea {
+            font-family: inherit;
+            font-size: inherit;
+            outline: none;
+            border: none;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--text-muted);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* ─────────────── UTILITY ─────────────── */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .flex {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .flex-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .grid {
+            display: grid;
+            gap: 20px;
+        }
+        .grid-cols-3 {
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        }
+        .grid-cols-2 {
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        }
+        .gap-8 {
+            gap: 8px;
+        }
+        .gap-12 {
+            gap: 12px;
+        }
+        .gap-20 {
+            gap: 20px;
+        }
+        .mt-12 {
+            margin-top: 12px;
+        }
+        .mt-20 {
+            margin-top: 20px;
+        }
+        .mt-32 {
+            margin-top: 32px;
+        }
+        .mb-12 {
+            margin-bottom: 12px;
+        }
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-muted {
+            color: var(--text-muted);
+        }
+        .text-secondary {
+            color: var(--text-secondary);
+        }
+        .text-accent {
+            color: var(--accent);
+        }
+        .hidden {
+            display: none !important;
+        }
+        .block {
+            display: block !important;
+        }
+        .w-full {
+            width: 100%;
+        }
+        .relative {
+            position: relative;
+        }
+
+        /* ─────────────── BUTTONS ─────────────── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all var(--transition);
+            border: none;
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: #0b0e1a;
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+        .btn-primary:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 50px rgba(255, 216, 102, 0.3);
+        }
+        .btn-primary:active {
+            transform: scale(0.96);
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.14);
+        }
+        .btn-danger {
+            background: rgba(255, 70, 70, 0.15);
+            color: #ff6b6b;
+            border: 1px solid rgba(255, 70, 70, 0.2);
+        }
+        .btn-danger:hover {
+            background: rgba(255, 70, 70, 0.25);
+        }
+        .btn-sm {
+            padding: 6px 16px;
+            font-size: 12px;
+        }
+        .btn-xs {
+            padding: 4px 12px;
+            font-size: 11px;
+        }
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--text-primary);
+        }
+        .btn-icon.active {
+            background: var(--accent-glow);
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* ─────────────── HEADER / NAV ─────────────── */
+        .header {
+            background: rgba(17, 22, 36, 0.88);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--accent);
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo span {
+            color: var(--text-primary);
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .nav-links a,
+        .nav-links button {
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .nav-links a:hover,
+        .nav-links button:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .nav-links a.active,
+        .nav-links button.active {
+            color: var(--accent);
+            background: var(--accent-glow);
+        }
+        .nav-links .user-badge {
+            color: var(--accent);
+            background: var(--accent-glow);
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* ─────────────── CARDS ─────────────── */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: all var(--transition);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: var(--shadow);
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* ─────────────── MOD CARD ─────────────── */
+        .mod-card {
+            cursor: pointer;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: all var(--transition);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .mod-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 216, 102, 0.2);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+        .mod-card .thumb {
+            height: 160px;
+            background: var(--bg-input);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: var(--text-muted);
+            position: relative;
+            overflow: hidden;
+        }
+        .mod-card .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .mod-card .thumb .fallback {
+            font-size: 56px;
+            opacity: 0.3;
+        }
+        .mod-card .info {
+            padding: 16px 18px 18px;
+        }
+        .mod-card .info h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .mod-card .info .meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+        .mod-card .info .meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .mod-card .info .desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+        .mod-card .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: var(--accent-glow);
+            color: var(--accent);
+        }
+        .mod-card .badge.blue {
+            background: rgba(100, 180, 255, 0.15);
+            color: #64b4ff;
+        }
+        .mod-card .badge.green {
+            background: rgba(100, 220, 150, 0.15);
+            color: #64dc96;
+        }
+
+        /* ─────────────── FORMS ─────────────── */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        .form-group .hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            transition: all var(--transition);
+        }
+        .form-control:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238892b0' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ─────────────── MODAL / OVERLAY ─────────────── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-overlay.hidden {
+            display: none;
+        }
+        .modal {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            max-width: 680px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            animation: slideUp 0.25s ease;
+        }
+        .modal-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            z-index: 2;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+        .modal-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .modal-body {
+            padding: 24px;
+        }
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            position: sticky;
+            bottom: 0;
+            background: var(--bg-secondary);
+            border-radius: 0 0 var(--radius) var(--radius);
+        }
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--text-primary);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ─────────────── TOAST ─────────────── */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 380px;
+            width: 100%;
+        }
+        .toast {
+            padding: 14px 20px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            animation: slideUp 0.25s ease;
+            color: var(--text-primary);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .toast.success {
+            border-left: 4px solid #64dc96;
+        }
+        .toast.error {
+            border-left: 4px solid #ff6b6b;
+        }
+        .toast.info {
+            border-left: 4px solid var(--accent);
+        }
+        .toast .toast-icon {
+            font-size: 20px;
+        }
+        .toast .toast-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0 4px;
+        }
+
+        /* ─────────────── PAGE SECTIONS ─────────────── */
+        .page {
+            display: none;
+            padding: 24px 0 40px;
+            animation: fadeIn 0.3s ease;
+        }
+        .page.active {
+            display: block;
+        }
+        .page-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .page-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        /* ─────────────── SEARCH / FILTER BAR ─────────────── */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            background: var(--bg-card);
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .filter-bar .search-input {
+            flex: 1;
+            min-width: 160px;
+            padding: 8px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+        }
+        .filter-bar .search-input:focus {
+            border-color: var(--accent);
+        }
+        .filter-bar select {
+            padding: 8px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+        .filter-bar .filter-actions {
+            display: flex;
+            gap: 6px;
+            margin-left: auto;
+        }
+
+        /* ─────────────── MOD DETAIL ─────────────── */
+        .mod-detail-hero {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 24px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .mod-detail-hero .logo-wrap {
+            width: 200px;
+            height: 200px;
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px;
+            color: var(--text-muted);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .mod-detail-hero .logo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .mod-detail-hero .info h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .mod-detail-hero .info .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 6px 16px;
+            margin: 10px 0 12px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .mod-detail-hero .info .meta-grid strong {
+            color: var(--text-primary);
+        }
+        .mod-detail-hero .info .desc {
+            color: var(--text-secondary);
+            margin: 8px 0 12px;
+            line-height: 1.7;
+        }
+        .mod-detail-hero .info .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .mod-detail-hero {
+                grid-template-columns: 1fr;
+            }
+            .mod-detail-hero .logo-wrap {
+                width: 100%;
+                height: 180px;
+            }
+        }
+
+        /* ─────────────── SCREENSHOTS ─────────────── */
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin: 10px 0 16px;
+        }
+        .screenshots-grid .ss {
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .screenshots-grid .ss img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ─────────────── COMMENTS ─────────────── */
+        .comment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 12px 0;
+        }
+        .comment-item {
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+        }
+        .comment-item .head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .comment-item .head .time {
+            font-weight: 400;
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+        .comment-item .head .fake-badge {
+            font-size: 9px;
+            text-transform: uppercase;
+            background: rgba(255, 216, 102, 0.15);
+            color: var(--accent);
+            padding: 0 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        .comment-item .text {
+            margin-top: 4px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* ─────────────── VOTING STARS ─────────────── */
+        .star-rating {
+            display: inline-flex;
+            gap: 4px;
+            direction: rtl;
+        }
+        .star-rating input {
+            display: none;
+        }
+        .star-rating label {
+            font-size: 28px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+        .star-rating label:hover,
+        .star-rating label:hover~label,
+        .star-rating input:checked~label {
+            color: var(--accent);
+        }
+        .star-rating.disabled label {
+            cursor: default;
+        }
+        .star-rating.disabled label:hover,
+        .star-rating.disabled label:hover~label {
+            color: var(--text-muted);
+        }
+        .star-rating.disabled input:checked~label {
+            color: var(--accent);
+        }
+
+        .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .rating-display .stars {
+            color: var(--accent);
+            font-size: 18px;
+            letter-spacing: 2px;
+        }
+        .rating-display .count {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* ─────────────── CHAT ─────────────── */
+        .chat-container {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            height: 480px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .chat-msg {
+            max-width: 80%;
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            animation: slideUp 0.2s ease;
+        }
+        .chat-msg.user {
+            align-self: flex-end;
+            background: var(--accent-glow);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 216, 102, 0.15);
+        }
+        .chat-msg.bot {
+            align-self: flex-start;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+        }
+        .chat-msg.admin {
+            align-self: flex-start;
+            background: rgba(100, 180, 255, 0.12);
+            border: 1px solid rgba(100, 180, 255, 0.15);
+            color: #64b4ff;
+        }
+        .chat-msg .sender {
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0.6;
+            margin-bottom: 2px;
+        }
+        .chat-msg .time {
+            font-size: 10px;
+            opacity: 0.4;
+            margin-left: 8px;
+        }
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+            padding: 12px 16px;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-input);
+        }
+        .chat-input-area input {
+            flex: 1;
+            padding: 8px 14px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+        }
+        .chat-input-area input:focus {
+            border-color: var(--accent);
+        }
+
+        /* ─────────────── ADMIN PANEL ─────────────── */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .admin-stats .stat {
+            background: var(--bg-card);
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .admin-stats .stat .num {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        .admin-stats .stat .label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-mod-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            transition: all var(--transition);
+        }
+        .admin-mod-item:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+        .admin-mod-item .thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .admin-mod-item .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .admin-mod-item .info {
+            flex: 1;
+        }
+        .admin-mod-item .info .name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .admin-mod-item .info .sub {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .admin-mod-item .actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        /* ─────────────── SUB4UNLOCK ─────────────── */
+        .sub4unlock-area {
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            border: 1px solid var(--border-color);
+            margin: 12px 0;
+        }
+        .sub4unlock-area .status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        .sub4unlock-area .status .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            flex-shrink: 0;
+        }
+        .sub4unlock-area .status .dot.green {
+            background: #64dc96;
+        }
+        .sub4unlock-area .status .dot.yellow {
+            background: var(--accent);
+            animation: pulse 1s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(0.85);
+            }
+        }
+
+        /* ─────────────── SETTINGS ─────────────── */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .bg-option {
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .bg-option:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .bg-option.active {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+        }
+        .bg-option .preview {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-sm);
+            flex-shrink: 0;
+            border: 1px solid var(--border-color);
+        }
+        .bg-option .info {
+            flex: 1;
+        }
+        .bg-option .info .name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .bg-option .info .desc {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .bg-preview-wrap {
+            position: relative;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-page);
+            background-image: var(--bg-gradient), var(--bg-image);
+            background-size: cover, cover;
+            background-position: center, center;
+            margin-bottom: 12px;
+        }
+        .bg-preview-wrap .overlay-label {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .color-picker-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .color-swatch {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .color-swatch:hover {
+            transform: scale(1.1);
+        }
+        .color-swatch.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        /* ─────────────── RESPONSIVE ─────────────── */
+        @media (max-width: 768px) {
+            .header .container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            .nav-links {
+                justify-content: center;
+            }
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-bar .filter-actions {
+                margin-left: 0;
+                justify-content: flex-end;
+            }
+            .grid-cols-3 {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+            .grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+            .mod-detail-hero .logo-wrap {
+                height: 140px;
+            }
+            .admin-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .toast-container {
+                left: 16px;
+                right: 16px;
+                max-width: none;
+            }
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .mod-card .thumb {
+                height: 120px;
+            }
+            .page-title {
+                font-size: 22px;
+            }
+            .modal {
+                margin: 10px;
+                max-height: 95vh;
+            }
+            .modal-body {
+                padding: 16px;
+            }
+        }
+
+        /* ─────────────── MISC ─────────────── */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state .icon {
+            font-size: 64px;
+            opacity: 0.3;
+            margin-bottom: 12px;
+        }
+        .empty-state h3 {
+            color: var(--text-secondary);
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 20px 0;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+        }
+
+        .subscriber-count-display {
+            font-size: 14px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .subscriber-count-display strong {
+            color: var(--text-primary);
+            font-size: 18px;
+        }
+
+        /* ─────────────── GLASSMORPHISM ENHANCEMENTS ─────────────── */
+        .glass {
+            background: rgba(26, 31, 46, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .glass-light {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* ─────────────── ANIMATED GRADIENT BGS ─────────────── */
+        .bg-animated-gradient {
+            background: linear-gradient(270deg, #0b0e1a, #1a1f2e, #2a1f3e, #0b0e1a);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Settings page background preview */
+        .bg-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .bg-preview-grid .item {
+            aspect-ratio: 16/9;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: all var(--transition);
+            overflow: hidden;
+            position: relative;
+        }
+        .bg-preview-grid .item:hover {
+            transform: scale(1.03);
+            border-color: var(--accent);
+        }
+        .bg-preview-grid .item.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+        .bg-preview-grid .item .check {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: var(--accent);
+            color: #0b0e1a;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0;
+            transition: all var(--transition);
+        }
+        .bg-preview-grid .item.active .check {
+            opacity: 1;
+        }
+        .bg-preview-grid .item .label {
+            position: absolute;
+            bottom: 4px;
+            left: 4px;
+            right: 4px;
+            text-align: center;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.6);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════════════════ HEADER ═══════════════════ -->
+    <header class="header" id="appHeader">
+        <div class="container">
+            <div class="logo">🎮 <span>WS</span> Mod Menu</div>
+            <nav class="nav-links" id="navLinks">
+                <a href="#" data-page="home" class="active">🏠 Home</a>
+                <a href="#" data-page="chat">💬 Chat</a>
+                <a href="#" data-page="admin" id="navAdmin" class="hidden">⚙️ Admin</a>
+                <a href="#" data-page="settings">⚡ Settings</a>
+                <button id="navLogin" class="active">🔐 Login</button>
+                <button id="navRegister">📝 Register</button>
+                <button id="navLogout" class="hidden">🚪 Logout</button>
+                <span id="userBadge" class="user-badge hidden"></span>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
+    <main class="container">
+
+        <!-- ─── HOME PAGE ─── -->
+        <section class="page active" id="page-home">
+            <div class="flex-between">
+                <div>
+                    <h1 class="page-title">🔥 Mods Gallery</h1>
+                    <p class="page-subtitle">Browse and download the latest mods — subscribe to unlock!</p>
+                </div>
+                <div>
+                    <span id="totalModsBadge" class="tag">0 mods</span>
+                </div>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search mods..." />
+                <select id="filterCategory">
+                    <option value="all">All Categories</option>
+                    <option value="action">Action</option>
+                    <option value="adventure">Adventure</option>
+                    <option value="casual">Casual</option>
+                    <option value="rpg">RPG</option>
+                    <option value="strategy">Strategy</option>
+                    <option value="other">Other</option>
+                </select>
+                <select id="sortBy">
+                    <option value="newest">Newest</option>
+                    <option value="downloads">Most Downloads</option>
+                    <option value="rating">Top Rated</option>
+                    <option value="name">Name A–Z</option>
+                </select>
+                <div class="filter-actions">
+                    <button class="btn btn-secondary btn-sm" id="resetFilters">Reset</button>
+                </div>
+            </div>
+
+            <!-- Mod Grid -->
+            <div class="grid grid-cols-3" id="modGrid">
+                <!-- rendered by JS -->
+            </div>
+            <div id="emptyModState" class="empty-state hidden">
+                <div class="icon">📦</div>
+                <h3>No mods found</h3>
+                <p class="text-muted">Try adjusting your search or filters.</p>
+            </div>
+        </section>
+
+        <!-- ─── CHAT PAGE ─── -->
+        <section class="page" id="page-chat">
+            <h1 class="page-title">💬 Live Chat</h1>
+            <p class="page-subtitle">Chat with the admin — Marry Bot is here to help!</p>
+            <div class="chat-container" id="chatContainer">
+                <div class="chat-messages" id="chatMessages">
+                    <!-- rendered by JS -->
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="Type your message..." />
+                    <button class="btn btn-primary btn-sm" id="chatSendBtn">Send</button>
+                </div>
+            </div>
+            <div class="mt-12 text-muted" style="font-size:13px;">
+                🤖 Marry Bot automatically responds to common questions. Admin may reply personally.
+            </div>
+        </section>
+
+        <!-- ─── ADMIN PAGE ─── -->
+        <section class="page" id="page-admin">
+            <div class="flex-between">
+                <div>
+                    <h1 class="page-title">⚙️ Admin Dashboard</h1>
+                    <p class="page-subtitle">Manage mods, interactions, and content.</p>
+                </div>
+                <div class="flex gap-8">
+                    <button class="btn btn-primary" id="adminUploadBtn">➕ Upload Mod</button>
+                    <button class="btn btn-secondary" id="adminManageSub4Btn">🔗 Sub4Unlock Links</button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="admin-stats" id="adminStats">
+                <div class="stat"><div class="num" id="statMods">0</div><div class="label">Total Mods</div></div>
+                <div class="stat"><div class="num" id="statDownloads">0</div><div class="label">Total Downloads</div></div>
+                <div class="stat"><div class="num" id="statComments">0</div><div class="label">Comments</div></div>
+                <div class="stat"><div class="num" id="statUsers">0</div><div class="label">Users</div></div>
+            </div>
+
+            <!-- Mod List (Admin) -->
+            <div class="card">
+                <div class="card-header">
+                    <span>📋 All Mods</span>
+                    <span class="text-muted" style="font-size:13px;" id="adminModCount">0 items</span>
+                </div>
+                <div class="card-body" id="adminModList">
+                    <!-- rendered by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── SETTINGS PAGE ─── -->
+        <section class="page" id="page-settings">
+            <h1 class="page-title">⚡ Settings</h1>
+            <p class="page-subtitle">Customize your experience — background, theme, and more.</p>
+
+            <div class="settings-grid">
+                <!-- Background Settings -->
+                <div class="card">
+                    <div class="card-header"><span>🎨 Background</span></div>
+                    <div class="card-body">
+                        <!-- Preview -->
+                        <div class="bg-preview-wrap" id="bgPreviewWrap">
+                            <span class="overlay-label">Live Preview</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Background Type</label>
+                            <select class="form-control" id="bgTypeSelect">
+                                <option value="solid">Solid Color</option>
+                                <option value="gradient">Gradient</option>
+                                <option value="image">Image URL</option>
+                            </select>
+                        </div>
+
+                        <div id="bgSolidOptions" class="form-group">
+                            <label>Solid Color</label>
+                            <div class="color-picker-row">
+                                <div class="color-swatch active" style="background:#0b0e1a;" data-color="#0b0e1a"></div>
+                                <div class="color-swatch" style="background:#1a1f2e;" data-color="#1a1f2e"></div>
+                                <div class="color-swatch" style="background:#2a1f3e;" data-color="#2a1f3e"></div>
+                                <div class="color-swatch" style="background:#1e2a3a;" data-color="#1e2a3a"></div>
+                                <div class="color-swatch" style="background:#0d1b2a;" data-color="#0d1b2a"></div>
+                                <div class="color-swatch" style="background:#1b1b2f;" data-color="#1b1b2f"></div>
+                                <div class="color-swatch" style="background:#2d2d44;" data-color="#2d2d44"></div>
+                            </div>
+                            <input type="color" class="form-control" id="bgCustomColor" value="#0b0e1a" style="width:60px;padding:4px;height:44px;cursor:pointer;" />
+                        </div>
+
+                        <div id="bgGradientOptions" class="form-group hidden">
+                            <label>Gradient Presets</label>
+                            <div class="bg-preview-grid">
+                                <div class="item active" data-gradient="linear-gradient(135deg, #0b0e1a, #1a1f2e)" style="background:linear-gradient(135deg,#0b0e1a,#1a1f2e);">
+                                    <span class="check">✓</span>
+                                    <span class="label">Deep Space</span>
+                                </div>
+                                <div class="item" data-gradient="linear-gradient(135deg, #1a1f2e, #2a1f3e)" style="background:linear-gradient(135deg,#1a1f2e,#2a1f3e);">
+                                    <span class="check">✓</span>
+                                    <span class="label">Purple Haze</span>
+                                </div>
+                                <div class="item" data-gradient="linear-gradient(135deg, #0d1b2a, #1b3a4a)" style="background:linear-gradient(135deg,#0d1b2a,#1b3a4a);">
+                                    <span class="check">✓</span>
+                                    <span class="label">Ocean Deep</span>
+                                </div>
+                                <div class="item" data-gradient="linear-gradient(135deg, #1a0a2e, #2d1b4e)" style="background:linear-gradient(135deg,#1a0a2e,#2d1b4e);">
+                                    <span class="check">✓</span>
+                                    <span class="label">Midnight</span>
+                                </div>
+                                <div class="item" data-gradient="linear-gradient(135deg, #0b0e1a, #2d2d44)" style="background:linear-gradient(135deg,#0b0e1a,#2d2d44);">
+                                    <span class="check">✓</span>
+                                    <span class="label">Slate</span>
+                                </div>
+                                <div class="item" data-gradient="linear-gradient(135deg, #1a2a1a, #0d1b0d)" style="background:linear-gradient(135deg,#1a2a1a,#0d1b0d);">
+                                    <span class="check">✓</span>
+                                    <span class="label">Forest</span>
+                                </div>
+                                <div class="item" data-gradient="linear-gradient(135deg, #2a1a1a, #1a0a0a)" style="background:linear-gradient(135deg,#2a1a1a,#1a0a0a);">
+                                    <span class="check">✓</span>
+                                    <span class="label">Ember</span>
+                                </div>
+                                <div class="item" data-gradient="linear-gradient(135deg, #1a1a2a, #0a0a1a)" style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);">
+                                    <span class="check">✓</span>
+                                    <span class="label">Night Sky</span>
+                                </div>
+                            </div>
+                            <div class="mt-12">
+                                <label>Custom Gradient (CSS)</label>
+                                <input type="text" class="form-control" id="bgCustomGradient" placeholder="linear-gradient(135deg, #color1, #color2)" />
+                            </div>
+                        </div>
+
+                        <div id="bgImageOptions" class="form-group hidden">
+                            <label>Background Image URL</label>
+                            <input type="text" class="form-control" id="bgImageUrl" placeholder="https://example.com/background.jpg" />
+                            <div class="hint">Paste a direct image URL. For best results, use high-resolution images.</div>
+                            <div class="mt-12">
+                                <label>Overlay Opacity</label>
+                                <input type="range" class="form-control" id="bgOverlayOpacity" min="0.3" max="0.95" step="0.05" value="0.85" />
+                                <div class="hint">Adjust overlay darkness for better readability.</div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary w-full mt-12" id="applyBgBtn">Apply Background</button>
+                        <button class="btn btn-secondary w-full mt-12" id="resetBgBtn">Reset to Default</button>
+                    </div>
+                </div>
+
+                <!-- Theme & Misc Settings -->
+                <div class="card">
+                    <div class="card-header"><span>🎛️ Preferences</span></div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Accent Color</label>
+                            <div class="color-picker-row">
+                                <div class="color-swatch active" style="background:#ffd866;" data-accent="#ffd866"></div>
+                                <div class="color-swatch" style="background:#64b4ff;" data-accent="#64b4ff"></div>
+                                <div class="color-swatch" style="background:#64dc96;" data-accent="#64dc96"></div>
+                                <div class="color-swatch" style="background:#ff7b7b;" data-accent="#ff7b7b"></div>
+                                <div class="color-swatch" style="background:#c084fc;" data-accent="#c084fc"></div>
+                                <div class="color-swatch" style="background:#f472b6;" data-accent="#f472b6"></div>
+                            </div>
+                            <input type="color" class="form-control" id="accentCustomColor" value="#ffd866" style="width:60px;padding:4px;height:44px;cursor:pointer;margin-top:6px;" />
+                            <button class="btn btn-secondary btn-sm mt-12" id="applyAccentBtn">Apply Accent</button>
+                        </div>
+
+                        <hr class="divider" />
+
+                        <div class="form-group">
+                            <label>Card Style</label>
+                            <select class="form-control" id="cardStyleSelect">
+                                <option value="glass">Glass (Default)</option>
+                                <option value="solid">Solid</option>
+                                <option value="borderless">Borderless</option>
+                            </select>
+                        </div>
+
+                        <hr class="divider" />
+
+                        <div class="form-group">
+                            <label>Animations</label>
+                            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                                <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary);">
+                                    <input type="checkbox" id="animationsEnabled" checked /> Enable animations
+                                </label>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-secondary w-full mt-12" id="savePrefsBtn">Save Preferences</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── LOGIN PAGE ─── -->
+        <section class="page" id="page-login">
+            <div style="max-width:400px;margin:0 auto;">
+                <div class="card">
+                    <div class="card-header"><span>🔐 Login</span></div>
+                    <div class="card-body">
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" class="form-control" id="loginUsername" placeholder="Enter username" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" class="form-control" id="loginPassword" placeholder="Enter password" required />
+                            </div>
+                            <button type="submit" class="btn btn-primary w-full">Login</button>
+                        </form>
+                        <div class="mt-12 text-center text-muted" style="font-size:13px;">
+                            Don't have an account? <a href="#" id="loginToRegister">Register here</a>
+                        </div>
+                        <div class="mt-12 text-center text-muted" style="font-size:12px;border-top:1px solid var(--border-color);padding-top:12px;">
+                            <strong>Demo Admins:</strong> admin/admin123 · ishwar17/ishwar17 · ishwar1212/ishwar1212
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── REGISTER PAGE ─── -->
+        <section class="page" id="page-register">
+            <div style="max-width:400px;margin:0 auto;">
+                <div class="card">
+                    <div class="card-header"><span>📝 Register</span></div>
+                    <div class="card-body">
+                        <form id="registerForm">
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" class="form-control" id="regUsername" placeholder="Choose a username" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" class="form-control" id="regPassword" placeholder="Create a password" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm Password</label>
+                                <input type="password" class="form-control" id="regPasswordConfirm" placeholder="Confirm password" required />
+                            </div>
+                            <button type="submit" class="btn btn-primary w-full">Register as Admin</button>
+                        </form>
+                        <div class="mt-12 text-center text-muted" style="font-size:13px;">
+                            Already have an account? <a href="#" id="registerToLogin">Login here</a>
+                        </div>
+                        <div class="mt-12 text-center text-muted" style="font-size:12px;border-top:1px solid var(--border-color);padding-top:12px;">
+                            ⚡ All new users automatically receive admin privileges.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ═══════════════════ MODALS ═══════════════════ -->
+    <!-- Mod Detail Modal -->
+    <div class="modal-overlay hidden" id="modDetailModal">
+        <div class="modal" style="max-width:860px;">
+            <div class="modal-header">
+                <h2 id="detailModalTitle">Mod Details</h2>
+                <button class="modal-close" id="detailModalClose">✕</button>
+            </div>
+            <div class="modal-body" id="detailModalBody">
+                <!-- rendered by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal-overlay hidden" id="uploadModal">
+        <div class="modal" style="max-width:700px;">
+            <div class="modal-header">
+                <h2 id="uploadModalTitle">Upload Mod</h2>
+                <button class="modal-close" id="uploadModalClose">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadForm">
+                    <input type="hidden" id="editModId" value="" />
+                    <!-- ... form fields ... -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Mod Name *</label>
+                            <input type="text" class="form-control" id="modName" placeholder="e.g. Super Speed Mod" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select class="form-control" id="modCategory">
+                                <option value="action">Action</option>
+                                <option value="adventure">Adventure</option>
+                                <option value="casual">Casual</option>
+                                <option value="rpg">RPG</option>
+                                <option value="strategy">Strategy</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description *</label>
+                        <textarea class="form-control" id="modDescription" placeholder="Describe the mod..." required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Version</label>
+                            <input type="text" class="form-control" id="modVersion" placeholder="e.g. 2.5.1" />
+                        </div>
+                        <div class="form-group">
+                            <label>File Size</label>
+                            <input type="text" class="form-control" id="modFileSize" placeholder="e.g. 45.2 MB" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Compatibility</label>
+                        <input type="text" class="form-control" id="modCompatibility" placeholder="e.g. Android 7.0+" />
+                    </div>
+                    <div class="form-group">
+                        <label>Installation Instructions</label>
+                        <textarea class="form-control" id="modInstallInstructions" placeholder="How to install this mod..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Game Logo (URL or base64)</label>
+                        <input type="text" class="form-control" id="modLogo" placeholder="Paste image URL or data:image..." />
+                        <div class="hint">Paste an image URL or base64 data. Leave empty for a placeholder.</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Screenshots (URLs, comma separated)</label>
+                        <input type="text" class="form-control" id="modScreenshots" placeholder="https://example.com/ss1.png, https://example.com/ss2.png" />
+                        <div class="hint">Paste image URLs separated by commas.</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Download Source *</label>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                            <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary);">
+                                <input type="radio" name="downloadType" value="file" checked /> File Upload
+                            </label>
+                            <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary);">
+                                <input type="radio" name="downloadType" value="link" /> External Link
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label id="downloadSourceLabel">Upload File (APK/ZIP) or Paste Link</label>
+                        <input type="text" class="form-control" id="modDownloadSource" placeholder="Paste download link or file data..." />
+                        <div class="hint">For external links: paste the full URL. For file upload: paste a data URL or use a file input (simulated).</div>
+                    </div>
+
+                    <hr class="divider" />
+
+                    <div style="font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:10px;">📊 Custom Interaction Counts (optional)</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Custom Likes</label>
+                            <input type="number" class="form-control" id="modCustomLikes" value="0" min="0" />
+                        </div>
+                        <div class="form-group">
+                            <label>Custom Dislikes</label>
+                            <input type="number" class="form-control" id="modCustomDislikes" value="0" min="0" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Custom Downloads</label>
+                            <input type="number" class="form-control" id="modCustomDownloads" value="0" min="0" />
+                        </div>
+                        <div class="form-group">
+                            <label>Custom Rating (0-5)</label>
+                            <input type="number" class="form-control" id="modCustomRating" value="0" min="0" max="5" step="0.1" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Custom Subscriber Count Display</label>
+                        <input type="number" class="form-control" id="modCustomSubscribers" value="0" min="0" />
+                        <div class="hint">This number is shown below the download button.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-full mt-12" id="uploadSubmitBtn">Upload Mod</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sub4Unlock Modal -->
+    <div class="modal-overlay hidden" id="sub4Modal">
+        <div class="modal" style="max-width:600px;">
+            <div class="modal-header">
+                <h2>🔗 Sub4Unlock Links</h2>
+                <button class="modal-close" id="sub4ModalClose">✕</button>
+            </div>
+            <div class="modal-body" id="sub4ModalBody">
+                <p class="text-muted" style="margin-bottom:12px;">Manage sub4unlock links for a mod. Each link triggers a <strong>silent 7-second wait</strong> before unlocking.</p>
+                <div class="form-group">
+                    <label>Select Mod</label>
+                    <select class="form-control" id="sub4ModSelect"></select>
+                </div>
+                <div class="form-group">
+                    <label>Add New Link</label>
+                    <div style="display:flex;gap:8px;">
+                        <input type="text" class="form-control" id="sub4LinkInput" placeholder="https://youtube.com/..." />
+                        <button class="btn btn-primary btn-sm" id="sub4AddBtn">Add</button>
+                    </div>
+                </div>
+                <hr class="divider" />
+                <div id="sub4LinkList">
+                    <!-- rendered by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════ TOAST CONTAINER ═══════════════════ -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ═══════════════════ JAVASCRIPT ═══════════════════ -->
+    <script>
+        // ════════════════════════════════════════════════════════════════════
+        //  WS MOD MENU – Full Application Logic with Settings
+        // ════════════════════════════════════════════════════════════════════
+
+        // ─── DATA STORE ───
+        const DB = {
+            get(key, def) { try { const d = localStorage.getItem('wsmod_' + key); return d ? JSON.parse(d) : def; } catch (
+                    _) { return def; } },
+            set(key, val) { localStorage.setItem('wsmod_' + key, JSON.stringify(val)); },
+            getUsers() { return this.get('users', []); },
+            setUsers(u) { this.set('users', u); },
+            getMods() { return this.get('mods', []); },
+            setMods(m) { this.set('mods', m); },
+            getChats() { return this.get('chats', []); },
+            setChats(c) { this.set('chats', c); },
+            getBotResponses() {
+                return this.get('botResponses', [
+                    { keywords: ['how to download', 'download mod'], response: 'To download mods, you need to subscribe to our YouTube channel first. After subscribing, click the download button and the link will open automatically once your subscription is verified.' },
+                    { keywords: ['download link not working', 'not working'], response: 'Please make sure you have subscribed to our YouTube channel at https://m.youtube.com/@w.s_mods. The system needs to detect a +1 increase in subscriber count before the download link becomes active.' },
+                    { keywords: ['how to install', 'installation'], response: 'Installation instructions are provided on each mod\'s detail page. Generally, you need to enable installation from unknown sources in your device settings, then download and install the APK file.' },
+                    { keywords: ['safe', 'virus', 'security'], response: 'All mods on our platform are carefully reviewed by our admin team. However, please download at your own discretion and ensure you have proper antivirus protection on your device.' },
+                    { keywords: ['request mod', 'request a mod', 'can you add'], response: 'Yes! You can send your mod request through this chat, and our admin will review it. We\'ll do our best to add requested mods to the platform.' },
+                    { keywords: ['contact support', 'support', 'help'], response: 'You\'re already chatting with our support system! Feel free to ask any questions, and if needed, our admin will personally respond to you.' },
+                    { keywords: ['why subscribe', 'why do i need to subscribe'], response: 'Subscribing to our YouTube channel helps us grow and continue providing quality mods. It\'s a simple way to support our work while getting access to all the amazing mods on our platform.' },
+                    { keywords: ['how to vote', 'vote on mods', 'rating'], response: 'You can vote on any mod by clicking the star rating on the mod\'s detail page. Simply select from 1 to 5 stars based on your experience with the mod.' },
+                    { keywords: ['change my vote', 'change vote'], response: 'Yes! You can change your vote at any time by selecting a different star rating on the mod\'s detail page.' },
+                    { keywords: ['become admin', 'how to become admin', 'register'], response: 'You can easily become an admin by registering on our platform! Simply click the Register button on the homepage, create your username and password, and you\'ll automatically receive full administrator privileges to manage the platform.' }
+                ]);
+            },
+            setBotResponses(b) { this.set('botResponses', b); },
+            getSession() { return this.get('session', null); },
+            setSession(s) { this.set('session', s); },
+            clearSession() { localStorage.removeItem('wsmod_session'); },
+            genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); },
+            ts() { return new Date().toISOString(); },
+            // Settings
+            getSettings() {
+                return this.get('settings', {
+                    bgType: 'solid',
+                    bgColor: '#0b0e1a',
+                    bgGradient: 'linear-gradient(135deg, #0b0e1a, #1a1f2e)',
+                    bgImage: '',
+                    bgOverlay: 0.85,
+                    accentColor: '#ffd866',
+                    cardStyle: 'glass',
+                    animations: true,
+                });
+            },
+            setSettings(s) { this.set('settings', s); },
+        };
+
+        // ─── STATE ───
+        let currentUser = DB.getSession();
+        let currentMods = DB.getMods();
+        let currentUsers = DB.getUsers();
+        let currentChats = DB.getChats();
+        let botResponses = DB.getBotResponses();
+        let selectedModId = null;
+        let sub4UnlockState = {};
+        let settings = DB.getSettings();
+
+        // ─── DOM REFS ───
+        const $ = (s) => document.querySelector(s);
+        const $$ = (s) => document.querySelectorAll(s);
+
+        const pages = {
+            home: $('#page-home'),
+            chat: $('#page-chat'),
+            admin: $('#page-admin'),
+            settings: $('#page-settings'),
+            login: $('#page-login'),
+            register: $('#page-register'),
+        };
+        const navLinks = $$('.nav-links a, .nav-links button');
+        const modGrid = $('#modGrid');
+        const emptyState = $('#emptyModState');
+        const searchInput = $('#searchInput');
+        const filterCategory = $('#filterCategory');
+        const sortBy = $('#sortBy');
+        const resetFilters = $('#resetFilters');
+        const totalModsBadge = $('#totalModsBadge');
+
+        // ─── AUTH ───
+        function getCurrentUser() {
+            const sess = DB.getSession();
+            if (!sess) return null;
+            const users = DB.getUsers();
+            return users.find(u => u.id === sess.userId) || null;
+        }
+
+        function isAdmin() {
+            const u = getCurrentUser();
+            return u && u.isAdmin === true;
+        }
+
+        function updateNav() {
+            const user = getCurrentUser();
+            const loggedIn = !!user;
+            const admin = isAdmin();
+
+            $('#navLogin').classList.toggle('hidden', loggedIn);
+            $('#navRegister').classList.toggle('hidden', loggedIn);
+            $('#navLogout').classList.toggle('hidden', !loggedIn);
+            $('#navAdmin').classList.toggle('hidden', !admin);
+
+            const badge = $('#userBadge');
+            if (loggedIn) {
+                badge.textContent = '👤 ' + user.username;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            if (!admin) {
+                document.querySelector('[data-page="admin"]')?.classList.add('hidden');
+            } else {
+                document.querySelector('[data-page="admin"]')?.classList.remove('hidden');
+            }
+
+            if (admin && pages.admin.classList.contains('active')) {
+                renderAdminPanel();
+            }
+        }
+
+        // ─── TOAST ───
+        function showToast(message, type = 'info', duration = 3500) {
+            const container = $('#toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+            toast.innerHTML = `
+                    <span class="toast-icon">${icons[type] || 'ℹ️'}</span>
+                    <span>${message}</span>
+                    <button class="toast-close">✕</button>
+                `;
+            toast.querySelector('.toast-close').addEventListener('click', () => toast.remove());
+            container.appendChild(toast);
+            setTimeout(() => { if (toast.parentNode) toast.remove(); }, duration);
+        }
+
+        // ─── NAVIGATION ───
+        function navigateTo(page) {
+            Object.keys(pages).forEach(key => {
+                pages[key].classList.toggle('active', key === page);
+            });
+            navLinks.forEach(el => {
+                const p = el.dataset.page;
+                el.classList.toggle('active', p === page);
+            });
+            if (page === 'home') renderModGrid();
+            if (page === 'admin' && isAdmin()) renderAdminPanel();
+            if (page === 'chat') renderChat();
+            if (page === 'settings') applySettingsToUI();
+            if (page === 'login' && getCurrentUser()) {
+                navigateTo('home');
+                showToast('You are already logged in.', 'info');
+                return;
+            }
+            if (page === 'register' && getCurrentUser()) {
+                navigateTo('home');
+                showToast('You are already logged in.', 'info');
+                return;
+            }
+        }
+
+        // ─── EVENT: NAV LINKS ───
+        document.querySelectorAll('[data-page]').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = el.dataset.page;
+                if (page === 'admin' && !isAdmin()) {
+                    showToast('Admin access required.', 'error');
+                    return;
+                }
+                navigateTo(page);
+            });
+        });
+
+        $('#navLogin').addEventListener('click', () => navigateTo('login'));
+        $('#navRegister').addEventListener('click', () => navigateTo('register'));
+        $('#navLogout').addEventListener('click', () => {
+            DB.clearSession();
+            currentUser = null;
+            updateNav();
+            navigateTo('home');
+            showToast('Logged out successfully.', 'info');
+        });
+        $('#loginToRegister').addEventListener('click', (e) => { e.preventDefault();
+            navigateTo('register'); });
+        $('#registerToLogin').addEventListener('click', (e) => { e.preventDefault();
+            navigateTo('login'); });
+
+        // ─── LOGIN ───
+        $('#loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = $('#loginUsername').value.trim();
+            const password = $('#loginPassword').value.trim();
+            if (!username || !password) { showToast('Please fill in all fields.', 'error'); return; }
+            const users = DB.getUsers();
+            const user = users.find(u => u.username === username && u.password === password);
+            if (!user) {
+                showToast('Invalid username or password.', 'error');
+                return;
+            }
+            DB.setSession({ userId: user.id, username: user.username });
+            currentUser = user;
+            updateNav();
+            navigateTo('home');
+            showToast(`Welcome back, ${user.username}!`, 'success');
+            $('#loginForm').reset();
+        });
+
+        // ─── REGISTER ───
+        $('#registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = $('#regUsername').value.trim();
+            const password = $('#regPassword').value.trim();
+            const confirm = $('#regPasswordConfirm').value.trim();
+            if (!username || !password || !confirm) { showToast('Please fill in all fields.', 'error'); return; }
+            if (password !== confirm) { showToast('Passwords do not match.', 'error'); return; }
+            if (password.length < 4) { showToast('Password must be at least 4 characters.', 'error'); return; }
+            const users = DB.getUsers();
+            if (users.find(u => u.username === username)) {
+                showToast('Username already taken.', 'error');
+                return;
+            }
+            const newUser = {
+                id: DB.genId(),
+                username,
+                password,
+                isAdmin: true,
+                createdAt: DB.ts(),
+            };
+            users.push(newUser);
+            DB.setUsers(users);
+            DB.setSession({ userId: newUser.id, username: newUser.username });
+            currentUser = newUser;
+            updateNav();
+            navigateTo('home');
+            showToast(`Registered as admin: ${username}!`, 'success');
+            $('#registerForm').reset();
+        });
+
+        // ─── RENDER: MOD GRID ───
+        function renderModGrid() {
+            const mods = DB.getMods();
+            const search = searchInput.value.toLowerCase().trim();
+            const category = filterCategory.value;
+            const sort = sortBy.value;
+
+            let filtered = mods.filter(m => {
+                const nameMatch = m.name.toLowerCase().includes(search);
+                const catMatch = category === 'all' || m.category === category;
+                return nameMatch && catMatch;
+            });
+
+            if (sort === 'newest') filtered.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
+            else if (sort === 'downloads') filtered.sort((a, b) => (b.realDownloads + b.customDownloads) - (a
+                .realDownloads + a.customDownloads));
+            else if (sort === 'rating') {
+                filtered.sort((a, b) => {
+                    const ra = a.customRating || a.realRating || 0;
+                    const rb = b.customRating || b.realRating || 0;
+                    return rb - ra;
+                });
+            } else if (sort === 'name') filtered.sort((a, b) => a.name.localeCompare(b.name));
+
+            totalModsBadge.textContent = `${filtered.length} mod${filtered.length !== 1 ? 's' : ''}`;
+
+            if (filtered.length === 0) {
+                modGrid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            modGrid.innerHTML = filtered.map(m => {
+                const totalDownloads = (m.realDownloads || 0) + (m.customDownloads || 0);
+                const rating = m.customRating || m.realRating || 0;
+                const logoHtml = m.logo ? `<img src="${m.logo}" alt="${m.name}" loading="lazy" />` :
+                    `<span class="fallback">🎮</span>`;
+                return `
+                        <div class="mod-card" data-id="${m.id}">
+                            <div class="thumb">${logoHtml}</div>
+                            <div class="info">
+                                <h3>${m.name}</h3>
+                                <div class="meta">
+                                    <span>📥 ${totalDownloads}</span>
+                                    <span>⭐ ${rating.toFixed(1)}</span>
+                                    <span class="badge">${m.category || 'other'}</span>
+                                    <span class="badge blue">v${m.version || '1.0'}</span>
+                                </div>
+                                <div class="desc">${m.description || 'No description.'}</div>
+                            </div>
+                        </div>
+                    `;
+            }).join('');
+
+            modGrid.querySelectorAll('.mod-card').forEach(el => {
+                el.addEventListener('click', () => {
+                    const id = el.dataset.id;
+                    openModDetail(id);
+                });
+            });
+        }
+
+        // ─── OPEN MOD DETAIL ───
+        function openModDetail(modId) {
+            const mods = DB.getMods();
+            const mod = mods.find(m => m.id === modId);
+            if (!mod) { showToast('Mod not found.', 'error'); return; }
+            selectedModId = modId;
+            const modal = $('#modDetailModal');
+            const body = $('#detailModalBody');
+            const title = $('#detailModalTitle');
+
+            title.textContent = mod.name;
+
+            const user = getCurrentUser();
+            const isLoggedIn = !!user;
+            const isAdminUser = isAdmin();
+
+            const totalDownloads = (mod.realDownloads || 0) + (mod.customDownloads || 0);
+            const realLikes = mod.realLikes || 0;
+            const realDislikes = mod.realDislikes || 0;
+            const customLikes = mod.customLikes || 0;
+            const customDislikes = mod.customDislikes || 0;
+            const rating = mod.customRating || mod.realRating || 0;
+            const votesTotal = mod.votes ? Object.values(mod.votes).reduce((a, b) => a + b, 0) : 0;
+            const subscriberDisplay = mod.customSubscribers || 0;
+
+            let userVote = null;
+            if (user && mod.userVotes && mod.userVotes[user.id]) {
+                userVote = mod.userVotes[user.id];
+            }
+
+            const sub4State = sub4UnlockState[modId] || { verified: false, waiting: false };
+
+            const screenshots = mod.screenshots || [];
+            const ssHtml = screenshots.length ? `
+                    <div class="screenshots-grid">
+                        ${screenshots.map(s => `<div class="ss"><img src="${s}" loading="lazy" /></div>`).join('')}
+                    </div>
+                ` : '';
+
+            const allComments = [...(mod.comments || [])].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            const commentsHtml = allComments.length ? `
+                    <div class="comment-list">
+                        ${allComments.map(c => `
+                            <div class="comment-item">
+                                <div class="head">
+                                    <span>${c.isFake ? '🤖' : '👤'} ${c.username}</span>
+                                    <span class="time">${new Date(c.timestamp).toLocaleDateString()}</span>
+                                    ${c.isFake ? '<span class="fake-badge">Fake</span>' : ''}
+                                </div>
+                                <div class="text">${c.text}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : '<div class="text-muted" style="padding:10px 0;">No comments yet.</div>';
+
+            const sub4Links = mod.sub4unlockLinks || [];
+            const sub4Html = sub4Links.length ? `
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;margin:6px 0;">
+                        ${sub4Links.map(link => `
+                            <button class="btn btn-secondary btn-sm sub4-link-btn" data-modid="${mod.id}" data-url="${link.url}">
+                                🔗 ${link.label || 'Unlock'}
+                            </button>
+                        `).join('')}
+                    </div>
+                ` : '<span class="text-muted">No sub4unlock links configured.</span>';
+
+            body.innerHTML = `
+                    <div class="mod-detail-hero" style="grid-template-columns:1fr;padding:0 0 16px 0;border:none;background:transparent;">
+                        <div style="display:flex;gap:20px;flex-wrap:wrap;">
+                            <div class="logo-wrap" style="width:120px;height:120px;border-radius:var(--radius-sm);background:var(--bg-input);flex-shrink:0;overflow:hidden;">
+                                ${mod.logo ? `<img src="${mod.logo}" alt="${mod.name}" />` : '🎮'}
+                            </div>
+                            <div style="flex:1;min-width:200px;">
+                                <h1 style="font-size:24px;">${mod.name}</h1>
+                                <div class="meta-grid" style="grid-template-columns:repeat(auto-fill,minmax(120px,1fr));">
+                                    <div><strong>Version</strong> ${mod.version || 'N/A'}</div>
+                                    <div><strong>Size</strong> ${mod.fileSize || 'N/A'}</div>
+                                    <div><strong>Compatibility</strong> ${mod.compatibility || 'N/A'}</div>
+                                    <div><strong>Category</strong> ${mod.category || 'Other'}</div>
+                                    <div><strong>Uploaded</strong> ${new Date(mod.uploadDate).toLocaleDateString()}</div>
+                                </div>
+                                <div class="desc">${mod.description || 'No description.'}</div>
+                                ${mod.installInstructions ? `<div style="margin:8px 0;padding:10px 14px;background:var(--bg-input);border-radius:var(--radius-sm);border:1px solid var(--border-color);font-size:13px;color:var(--text-secondary);"><strong>📖 Installation:</strong> ${mod.installInstructions}</div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+
+                    ${ssHtml}
+
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin:12px 0;padding:12px;background:var(--bg-input);border-radius:var(--radius-sm);border:1px solid var(--border-color);">
+                        <div><span class="text-muted">📥 Downloads</span> <strong>${totalDownloads}</strong></div>
+                        <div><span class="text-muted">⭐ Rating</span> <strong>${rating.toFixed(1)}</strong> (${votesTotal} votes)</div>
+                        <div><span class="text-muted">👍 Likes</span> <strong>${realLikes + customLikes}</strong></div>
+                        <div><span class="text-muted">👎 Dislikes</span> <strong>${realDislikes + customDislikes}</strong></div>
+                        <div><span class="text-muted">👥 Subscribers</span> <strong>${subscriberDisplay}</strong></div>
+                    </div>
+
+                    <div style="margin:12px 0;padding:12px 16px;background:var(--bg-input);border-radius:var(--radius-sm);border:1px solid var(--border-color);">
+                        <div style="font-weight:600;margin-bottom:6px;">⭐ Rate this mod</div>
+                        <div class="flex" style="gap:4px;flex-wrap:wrap;">
+                            <div class="star-rating ${!isLoggedIn ? 'disabled' : ''}" id="voteStars">
+                                ${[5,4,3,2,1].map(s => `
+                                    <input type="radio" name="vote" value="${s}" id="vote${s}" ${userVote === s ? 'checked' : ''} ${!isLoggedIn ? 'disabled' : ''} />
+                                    <label for="vote${s}">★</label>
+                                `).join('')}
+                            </div>
+                            <span class="text-muted" style="font-size:13px;margin-left:8px;">
+                                ${isLoggedIn ? (userVote ? `You voted ${userVote}★` : 'Tap a star to vote') : 'Login to vote'}
+                            </span>
+                        </div>
+                        <div class="rating-display mt-12">
+                            <span class="stars">${'★'.repeat(Math.round(rating))}${'☆'.repeat(5 - Math.round(rating))}</span>
+                            <span class="count">${rating.toFixed(1)} (${votesTotal} votes)</span>
+                        </div>
+                    </div>
+
+                    <div style="display:flex;gap:12px;margin:12px 0;flex-wrap:wrap;">
+                        <button class="btn btn-secondary btn-sm" id="likeBtn">👍 Like (${realLikes + customLikes})</button>
+                        <button class="btn btn-secondary btn-sm" id="dislikeBtn">👎 Dislike (${realDislikes + customDislikes})</button>
+                    </div>
+
+                    <div class="sub4unlock-area">
+                        <div style="font-weight:600;margin-bottom:8px;">🔓 Sub4Unlock</div>
+                        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">
+                            Subscribe to <a href="https://m.youtube.com/@w.s_mods" target="_blank">YouTube Channel</a> and click a link below to unlock the download.
+                            ${sub4Links.length ? 'A silent 7-second verification will run in the background.' : 'No sub4unlock links configured for this mod.'}
+                        </div>
+                        ${sub4Html}
+                        <div class="sub4unlock-area" style="margin-top:10px;background:var(--bg-secondary);">
+                            <div class="status">
+                                <span class="dot ${sub4State.verified ? 'green' : sub4State.waiting ? 'yellow' : ''}" id="sub4StatusDot"></span>
+                                <span id="sub4StatusText">
+                                    ${sub4State.verified ? '✅ Verified — Download ready!' : sub4State.waiting ? '⏳ Verifying...' : '🔒 Awaiting subscription verification'}
+                                </span>
+                            </div>
+                            <div style="margin-top:8px;">
+                                <button class="btn btn-primary ${!sub4State.verified ? 'disabled' : ''}" id="downloadBtn" ${!sub4State.verified ? 'disabled' : ''}>
+                                    📥 Download
+                                </button>
+                                <span class="subscriber-count-display" style="margin-left:12px;">
+                                    👥 <strong>${subscriberDisplay}</strong> subscribers
+                                </span>
+                            </div>
+                            <div style="font-size:12px;color:var(--text-muted);margin-top:6px;">
+                                Download link will only open after subscription is confirmed.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:16px;">
+                        <div style="font-weight:600;margin-bottom:8px;">💬 Comments (${allComments.length})</div>
+                        ${commentsHtml}
+                        ${isLoggedIn ? `
+                            <div style="display:flex;gap:8px;margin-top:10px;">
+                                <input type="text" class="form-control" id="commentInput" placeholder="Write a comment..." />
+                                <button class="btn btn-primary btn-sm" id="commentSubmitBtn">Post</button>
+                            </div>
+                        ` : `<div class="text-muted" style="font-size:13px;padding:8px 0;">Login to leave a comment.</div>`}
+                    </div>
+
+                    ${isAdminUser ? `
+                        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border-color);display:flex;gap:8px;flex-wrap:wrap;">
+                            <button class="btn btn-secondary btn-sm" id="adminEditModBtn">✏️ Edit Mod</button>
+                            <button class="btn btn-danger btn-sm" id="adminDeleteModBtn">🗑️ Delete Mod</button>
+                            <button class="btn btn-secondary btn-sm" id="adminAddFakeCommentBtn">🤖 Add Fake Comment</button>
+                            <button class="btn btn-secondary btn-sm" id="adminManageSub4BtnDetail">🔗 Sub4Unlock Links</button>
+                        </div>
+                    ` : ''}
+                `;
+
+            modal.classList.remove('hidden');
+
+            // ─── Event: Vote ───
+            const voteRadios = body.querySelectorAll('input[name="vote"]');
+            voteRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (!user) { showToast('Please login to vote.', 'error'); this.checked = false; return; }
+                    const val = parseInt(this.value);
+                    handleVote(mod.id, val);
+                });
+            });
+
+            body.querySelector('#likeBtn')?.addEventListener('click', () => handleLikeDislike(mod.id, 'like'));
+            body.querySelector('#dislikeBtn')?.addEventListener('click', () => handleLikeDislike(mod.id, 'dislike'));
+
+            body.querySelectorAll('.sub4-link-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modId = this.dataset.modid;
+                    const url = this.dataset.url;
+                    handleSub4Unlock(modId, url);
+                });
+            });
+
+            body.querySelector('#downloadBtn')?.addEventListener('click', function() {
+                if (this.disabled) { showToast('Please complete sub4unlock verification first.', 'error'); return; }
+                const modData = DB.getMods().find(m => m.id === mod.id);
+                if (!modData) return;
+                const src = modData.downloadSource;
+                if (!src || !src.value) { showToast('No download source available.', 'error'); return; }
+                modData.realDownloads = (modData.realDownloads || 0) + 1;
+                const allMods = DB.getMods();
+                const idx = allMods.findIndex(m => m.id === modData.id);
+                if (idx !== -1) allMods[idx] = modData;
+                DB.setMods(allMods);
+                currentMods = allMods;
+                showToast('Download started!', 'success');
+                if (src.type === 'link') {
+                    window.open(src.value, '_blank');
+                } else {
+                    showToast('File download simulated. (File data not stored in demo.)', 'info');
+                }
+                openModDetail(mod.id);
+            });
+
+            body.querySelector('#commentSubmitBtn')?.addEventListener('click', () => {
+                const input = body.querySelector('#commentInput');
+                const text = input.value.trim();
+                if (!text) { showToast('Please enter a comment.', 'error'); return; }
+                if (!user) { showToast('Please login to comment.', 'error'); return; }
+                handleAddComment(mod.id, text, false);
+            });
+            body.querySelector('#commentInput')?.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    body.querySelector('#commentSubmitBtn')?.click();
+                }
+            });
+
+            body.querySelector('#adminEditModBtn')?.addEventListener('click', () => {
+                $('#modDetailModal').classList.add('hidden');
+                openUploadModal(mod.id);
+            });
+            body.querySelector('#adminDeleteModBtn')?.addEventListener('click', () => {
+                if (confirm(`Delete "${mod.name}" permanently?`)) {
+                    handleDeleteMod(mod.id);
+                    $('#modDetailModal').classList.add('hidden');
+                }
+            });
+            body.querySelector('#adminAddFakeCommentBtn')?.addEventListener('click', () => {
+                const name = prompt('Enter fake username:', 'FakeUser');
+                if (!name) return;
+                const text = prompt('Enter fake comment text:');
+                if (!text) return;
+                handleAddComment(mod.id, text, true, name);
+                openModDetail(mod.id);
+            });
+            body.querySelector('#adminManageSub4BtnDetail')?.addEventListener('click', () => {
+                $('#modDetailModal').classList.add('hidden');
+                openSub4Modal(mod.id);
+            });
+        }
+
+        // ─── HANDLE: Vote ───
+        function handleVote(modId, rating) {
+            const user = getCurrentUser();
+            if (!user) { showToast('Please login to vote.', 'error'); return; }
+            const mods = DB.getMods();
+            const mod = mods.find(m => m.id === modId);
+            if (!mod) return;
+            if (!mod.votes) mod.votes = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+            if (!mod.userVotes) mod.userVotes = {};
+
+            if (mod.userVotes[user.id]) {
+                const old = mod.userVotes[user.id];
+                if (mod.votes[old] > 0) mod.votes[old]--;
+            }
+            mod.userVotes[user.id] = rating;
+            if (mod.votes[rating] !== undefined) mod.votes[rating]++;
+
+            const total = Object.values(mod.votes).reduce((a, b) => a + b, 0);
+            const sum = Object.entries(mod.votes).reduce((s, [k, v]) => s + parseInt(k) * v, 0);
+            mod.realRating = total > 0 ? sum / total : 0;
+
+            const allMods = DB.getMods();
+            const idx = allMods.findIndex(m => m.id === modId);
+            if (idx !== -1) allMods[idx] = mod;
+            DB.setMods(allMods);
+            currentMods = allMods;
+            showToast(`Voted ${rating}★!`, 'success');
+            openModDetail(modId);
+            renderModGrid();
+        }
+
+        // ─── HANDLE: Like / Dislike ───
+        function handleLikeDislike(modId, type) {
+            const user = getCurrentUser();
+            if (!user) { showToast('Please login to interact.', 'error'); return; }
+            const mods = DB.getMods();
+            const mod = mods.find(m => m.id === modId);
+            if (!mod) return;
+            if (type === 'like') mod.realLikes = (mod.realLikes || 0) + 1;
+            else mod.realDislikes = (mod.realDislikes || 0) + 1;
+            const allMods = DB.getMods();
+            const idx = allMods.findIndex(m => m.id === modId);
+            if (idx !== -1) allMods[idx] = mod;
+            DB.setMods(allMods);
+            currentMods = allMods;
+            showToast(`${type === 'like' ? '👍 Liked' : '👎 Disliked'}!`, 'success');
+            openModDetail(modId);
+            renderModGrid();
+        }
+
+        // ─── HANDLE: Sub4Unlock ───
+        function handleSub4Unlock(modId, url) {
+            if (sub4UnlockState[modId] && sub4UnlockState[modId].waiting) {
+                showToast('Verification already in progress. Please wait.', 'info');
+                return;
+            }
+            if (sub4UnlockState[modId] && sub4UnlockState[modId].verified) {
+                showToast('Already verified! Download is ready.', 'success');
+                return;
+            }
+
+            window.open(url, '_blank');
+
+            sub4UnlockState[modId] = { verified: false, waiting: true };
+            showToast('🔗 Sub4Unlock link opened. Verifying... (silent 7s wait)', 'info');
+
+            let elapsed = 0;
+            const interval = setInterval(() => {
+                elapsed += 0.1;
+                if (elapsed >= 7.0) {
+                    clearInterval(interval);
+                    sub4UnlockState[modId] = { verified: true, waiting: false };
+                    showToast('✅ Subscription verified! Download is now available.', 'success');
+                    openModDetail(modId);
+                    renderModGrid();
+                }
+            }, 100);
+
+            sub4UnlockState[modId].timer = interval;
+            openModDetail(modId);
+        }
+
+        // ─── HANDLE: Add Comment ───
+        function handleAddComment(modId, text, isFake = false, fakeUsername = null) {
+            const user = getCurrentUser();
+            if (!isFake && !user) { showToast('Please login to comment.', 'error'); return; }
+            const mods = DB.getMods();
+            const mod = mods.find(m => m.id === modId);
+            if (!mod) return;
+            if (!mod.comments) mod.comments = [];
+            const comment = {
+                id: DB.genId(),
+                userId: isFake ? 'fake_' + DB.genId() : user.id,
+                username: isFake ? (fakeUsername || 'FakeUser') : user.username,
+                text: text,
+                timestamp: DB.ts(),
+                isFake: isFake,
+            };
+            mod.comments.push(comment);
+            const allMods = DB.getMods();
+            const idx = allMods.findIndex(m => m.id === modId);
+            if (idx !== -1) allMods[idx] = mod;
+            DB.setMods(allMods);
+            currentMods = allMods;
+            showToast(isFake ? 'Fake comment added!' : 'Comment posted!', 'success');
+            openModDetail(modId);
+            renderModGrid();
+        }
+
+        // ─── HANDLE: Delete Mod ───
+        function handleDeleteMod(modId) {
+            let mods = DB.getMods();
+            mods = mods.filter(m => m.id !== modId);
+            DB.setMods(mods);
+            currentMods = mods;
+            showToast('Mod deleted.', 'info');
+            renderModGrid();
+            if (isAdmin()) renderAdminPanel();
+        }
+
+        // ─── MODAL: Detail Close ───
+        $('#detailModalClose').addEventListener('click', () => {
+            $('#modDetailModal').classList.add('hidden');
+            Object.keys(sub4UnlockState).forEach(key => {
+                if (sub4UnlockState[key].timer) {
+                    clearInterval(sub4UnlockState[key].timer);
+                    sub4UnlockState[key].timer = null;
+                }
+            });
+        });
+        $('#modDetailModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                $('#modDetailModal').classList.add('hidden');
+            }
+        });
+
+        // ─── UPLOAD MODAL ───
+        function openUploadModal(editId = null) {
+            const modal = $('#uploadModal');
+            const title = $('#uploadModalTitle');
+            const submitBtn = $('#uploadSubmitBtn');
+
+            if (editId) {
+                title.textContent = '✏️ Edit Mod';
+                submitBtn.textContent = 'Update Mod';
+                const mods = DB.getMods();
+                const mod = mods.find(m => m.id === editId);
+                if (mod) {
+                    $('#editModId').value = mod.id;
+                    $('#modName').value = mod.name || '';
+                    $('#modCategory').value = mod.category || 'other';
+                    $('#modDescription').value = mod.description || '';
+                    $('#modVersion').value = mod.version || '';
+                    $('#modFileSize').value = mod.fileSize || '';
+                    $('#modCompatibility').value = mod.compatibility || '';
+                    $('#modInstallInstructions').value = mod.installInstructions || '';
+                    $('#modLogo').value = mod.logo || '';
+                    $('#modScreenshots').value = (mod.screenshots || []).join(', ');
+                    const dlType = mod.downloadSource?.type || 'file';
+                    document.querySelector(`input[name="downloadType"][value="${dlType}"]`).checked = true;
+                    $('#modDownloadSource').value = mod.downloadSource?.value || '';
+                    $('#modCustomLikes').value = mod.customLikes || 0;
+                    $('#modCustomDislikes').value = mod.customDislikes || 0;
+                    $('#modCustomDownloads').value = mod.customDownloads || 0;
+                    $('#modCustomRating').value = mod.customRating || 0;
+                    $('#modCustomSubscribers').value = mod.customSubscribers || 0;
+                    updateDownloadLabel();
+                }
+            } else {
+                title.textContent = '📤 Upload Mod';
+                submitBtn.textContent = 'Upload Mod';
+                document.querySelector('input[name="downloadType"][value="file"]').checked = true;
+                updateDownloadLabel();
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function updateDownloadLabel() {
+            const type = document.querySelector('input[name="downloadType"]:checked')?.value || 'file';
+            const label = $('#downloadSourceLabel');
+            if (type === 'file') label.textContent = 'Upload File (APK/ZIP) — paste data URL or use external link';
+            else label.textContent = 'External Link (Google Drive, Dropbox, etc.)';
+        }
+
+        document.querySelectorAll('input[name="downloadType"]').forEach(el => {
+            el.addEventListener('change', updateDownloadLabel);
+        });
+
+        $('#uploadModalClose').addEventListener('click', () => $('#uploadModal').classList.add('hidden'));
+        $('#uploadModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) $('#uploadModal').classList.add('hidden');
+        });
+        $('#adminUploadBtn').addEventListener('click', () => openUploadModal());
+
+        // ─── UPLOAD FORM SUBMIT ───
+        $('#uploadForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const editId = $('#editModId').value;
+            const name = $('#modName').value.trim();
+            const category = $('#modCategory').value;
+            const description = $('#modDescription').value.trim();
+            const version = $('#modVersion').value.trim();
+            const fileSize = $('#modFileSize').value.trim();
+            const compatibility = $('#modCompatibility').value.trim();
+            const installInstructions = $('#modInstallInstructions').value.trim();
+            const logo = $('#modLogo').value.trim();
+            const screenshotsRaw = $('#modScreenshots').value.trim();
+            const screenshots = screenshotsRaw ? screenshotsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const downloadType = document.querySelector('input[name="downloadType"]:checked')?.value || 'file';
+            const downloadSource = $('#modDownloadSource').value.trim();
+            const customLikes = parseInt($('#modCustomLikes').value) || 0;
+            const customDislikes = parseInt($('#modCustomDislikes').value) || 0;
+            const customDownloads = parseInt($('#modCustomDownloads').value) || 0;
+            const customRating = parseFloat($('#modCustomRating').value) || 0;
+            const customSubscribers = parseInt($('#modCustomSubscribers').value) || 0;
+
+            if (!name || !description || !downloadSource) {
+                showToast('Please fill in all required fields (*).', 'error');
+                return;
+            }
+
+            const mods = DB.getMods();
+
+            if (editId) {
+                const idx = mods.findIndex(m => m.id === editId);
+                if (idx === -1) { showToast('Mod not found.', 'error'); return; }
+                const mod = mods[idx];
+                mod.name = name;
+                mod.category = category;
+                mod.description = description;
+                mod.version = version;
+                mod.fileSize = fileSize;
+                mod.compatibility = compatibility;
+                mod.installInstructions = installInstructions;
+                mod.logo = logo;
+                mod.screenshots = screenshots;
+                mod.downloadSource = { type: downloadType, value: downloadSource };
+                mod.customLikes = customLikes;
+                mod.customDislikes = customDislikes;
+                mod.customDownloads = customDownloads;
+                mod.customRating = customRating;
+                mod.customSubscribers = customSubscribers;
+                mods[idx] = mod;
+                DB.setMods(mods);
+                currentMods = mods;
+                showToast('Mod updated successfully!', 'success');
+            } else {
+                const newMod = {
+                    id: DB.genId(),
+                    name,
+                    category,
+                    description,
+                    version: version || '1.0',
+                    fileSize: fileSize || 'N/A',
+                    compatibility: compatibility || 'Android 7.0+',
+                    installInstructions: installInstructions || 'Enable unknown sources and install the APK.',
+                    logo: logo || '',
+                    screenshots: screenshots || [],
+                    downloadSource: { type: downloadType, value: downloadSource },
+                    uploadDate: DB.ts(),
+                    realDownloads: 0,
+                    customDownloads: customDownloads,
+                    realLikes: 0,
+                    realDislikes: 0,
+                    customLikes: customLikes,
+                    customDislikes: customDislikes,
+                    realRating: 0,
+                    customRating: customRating,
+                    customSubscribers: customSubscribers,
+                    votes: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+                    userVotes: {},
+                    comments: [],
+                    sub4unlockLinks: [],
+                };
+                mods.push(newMod);
+                DB.setMods(mods);
+                currentMods = mods;
+                showToast('Mod uploaded successfully!', 'success');
+            }
+
+            $('#uploadModal').classList.add('hidden');
+            renderModGrid();
+            if (isAdmin()) renderAdminPanel();
+        });
+
+        // ─── ADMIN PANEL ───
+        function renderAdminPanel() {
+            if (!isAdmin()) return;
+            const mods = DB.getMods();
+            const users = DB.getUsers();
+
+            $('#statMods').textContent = mods.length;
+            const totalDownloads = mods.reduce((s, m) => s + (m.realDownloads || 0) + (m.customDownloads || 0), 0);
+            $('#statDownloads').textContent = totalDownloads;
+            const totalComments = mods.reduce((s, m) => s + (m.comments || []).length, 0);
+            $('#statComments').textContent = totalComments;
+            $('#statUsers').textContent = users.length;
+            $('#adminModCount').textContent = `${mods.length} items`;
+
+            const list = $('#adminModList');
+            if (mods.length === 0) {
+                list.innerHTML =
+                    `<div class="empty-state" style="padding:30px 0;"><div class="icon">📦</div><h3>No mods uploaded yet</h3><p class="text-muted">Click "Upload Mod" to add your first mod.</p></div>`;
+                return;
+            }
+
+            list.innerHTML = mods.map(m => {
+                const totalDl = (m.realDownloads || 0) + (m.customDownloads || 0);
+                return `
+                        <div class="admin-mod-item">
+                            <div class="thumb">${m.logo ? `<img src="${m.logo}" />` : '🎮'}</div>
+                            <div class="info">
+                                <div class="name">${m.name}</div>
+                                <div class="sub">📥 ${totalDl} · ⭐ ${(m.customRating || m.realRating || 0).toFixed(1)} · ${m.category || 'other'}</div>
+                            </div>
+                            <div class="actions">
+                                <button class="btn btn-secondary btn-xs admin-view-btn" data-id="${m.id}">👁️</button>
+                                <button class="btn btn-secondary btn-xs admin-edit-btn" data-id="${m.id}">✏️</button>
+                                <button class="btn btn-danger btn-xs admin-delete-btn" data-id="${m.id}">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+            }).join('');
+
+            list.querySelectorAll('.admin-view-btn').forEach(btn => {
+                btn.addEventListener('click', () => openModDetail(btn.dataset.id));
+            });
+            list.querySelectorAll('.admin-edit-btn').forEach(btn => {
+                btn.addEventListener('click', () => openUploadModal(btn.dataset.id));
+            });
+            list.querySelectorAll('.admin-delete-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (confirm('Delete this mod permanently?')) {
+                        handleDeleteMod(btn.dataset.id);
+                        renderAdminPanel();
+                    }
+                });
+            });
+        }
+
+        // ─── SUB4UNLOCK MODAL ───
+        function openSub4Modal(preSelectModId = null) {
+            const modal = $('#sub4Modal');
+            const select = $('#sub4ModSelect');
+            const list = $('#sub4LinkList');
+
+            const mods = DB.getMods();
+            select.innerHTML = mods.map(m => `
+                    <option value="${m.id}" ${m.id === preSelectModId ? 'selected' : ''}>${m.name}</option>
+                `).join('');
+
+            renderSub4Links();
+
+            modal.classList.remove('hidden');
+
+            function renderSub4Links() {
+                const modId = select.value;
+                const mod = DB.getMods().find(m => m.id === modId);
+                if (!mod) { list.innerHTML = '<div class="text-muted">Select a mod to manage links.</div>'; return; }
+                const links = mod.sub4unlockLinks || [];
+                if (links.length === 0) {
+                    list.innerHTML = '<div class="text-muted">No sub4unlock links for this mod.</div>';
+                    return;
+                }
+                list.innerHTML = links.map((link, idx) => `
+                        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg-input);border-radius:var(--radius-sm);border:1px solid var(--border-color);margin-bottom:6px;">
+                            <span style="flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🔗 ${link.label || 'Unlock'}: ${link.url}</span>
+                            <button class="btn btn-danger btn-xs sub4-remove-btn" data-modid="${mod.id}" data-linkid="${link.id}">✕</button>
+                        </div>
+                    `).join('');
+
+                list.querySelectorAll('.sub4-remove-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const modId = this.dataset.modid;
+                        const linkId = this.dataset.linkid;
+                        const mods = DB.getMods();
+                        const mod = mods.find(m => m.id === modId);
+                        if (!mod) return;
+                        mod.sub4unlockLinks = (mod.sub4unlockLinks || []).filter(l => l.id !== linkId);
+                        DB.setMods(mods);
+                        currentMods = mods;
+                        renderSub4Links();
+                        showToast('Link removed.', 'info');
+                    });
+                });
+            }
+
+            select.addEventListener('change', renderSub4Links);
+
+            $('#sub4AddBtn').onclick = function() {
+                const modId = select.value;
+                const url = $('#sub4LinkInput').value.trim();
+                if (!url) { showToast('Please enter a URL.', 'error'); return; }
+                const mods = DB.getMods();
+                const mod = mods.find(m => m.id === modId);
+                if (!mod) { showToast('Mod not found.', 'error'); return; }
+                if (!mod.sub4unlockLinks) mod.sub4unlockLinks = [];
+                const label = prompt('Enter a label for this link (e.g. "Subscribe on YouTube"):', 'Subscribe');
+                mod.sub4unlockLinks.push({
+                    id: DB.genId(),
+                    url: url,
+                    label: label || 'Unlock',
+                });
+                DB.setMods(mods);
+                currentMods = mods;
+                $('#sub4LinkInput').value = '';
+                renderSub4Links();
+                showToast('Sub4Unlock link added!', 'success');
+            };
+        }
+
+        $('#sub4ModalClose').addEventListener('click', () => $('#sub4Modal').classList.add('hidden'));
+        $('#sub4Modal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) $('#sub4Modal').classList.add('hidden');
+        });
+        $('#adminManageSub4Btn').addEventListener('click', () => openSub4Modal());
+
+        // ─── CHAT ───
+        function renderChat() {
+            const user = getCurrentUser();
+            const messages = $('#chatMessages');
+            const input = $('#chatInput');
+
+            if (!user) {
+                messages.innerHTML = `
+                        <div class="empty-state" style="padding:60px 0;">
+                            <div class="icon">💬</div>
+                            <h3>Login to chat</h3>
+                            <p class="text-muted">Please login to send messages to the admin.</p>
+                        </div>
+                    `;
+                input.disabled = true;
+                $('#chatSendBtn').disabled = true;
+                return;
+            }
+
+            input.disabled = false;
+            $('#chatSendBtn').disabled = false;
+
+            let chat = currentChats.find(c => c.userId === user.id);
+            if (!chat) {
+                chat = {
+                    id: DB.genId(),
+                    userId: user.id,
+                    username: user.username,
+                    messages: [
+                        { sender: 'bot', text: '👋 Hello! I\'m Marry Bot. How can I help you today?', timestamp: DB
+                                .ts(), isBot: true }
+                    ]
+                };
+                currentChats.push(chat);
+                DB.setChats(currentChats);
+            }
+
+            messages.innerHTML = chat.messages.map(msg => {
+                const cls = msg.isBot ? 'bot' : (msg.sender === 'admin' ? 'admin' : 'user');
+                const senderName = msg.isBot ? '🤖 Marry Bot' : (msg.sender === 'admin' ? '👤 Admin' : '👤 ' + chat
+                    .username);
+                return `
+                        <div class="chat-msg ${cls}">
+                            <div class="sender">${senderName} <span class="time">${new Date(msg.timestamp).toLocaleTimeString()}</span></div>
+                            <div>${msg.text}</div>
+                        </div>
+                    `;
+            }).join('');
+
+            messages.scrollTop = messages.scrollHeight;
+            window._currentChat = chat;
+        }
+
+        $('#chatSendBtn').addEventListener('click', sendChatMessage);
+        $('#chatInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendChatMessage();
+        });
+
+        function sendChatMessage() {
+            const user = getCurrentUser();
+            if (!user) { showToast('Please login to chat.', 'error'); return; }
+            const input = $('#chatInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            let chat = currentChats.find(c => c.userId === user.id);
+            if (!chat) {
+                chat = {
+                    id: DB.genId(),
+                    userId: user.id,
+                    username: user.username,
+                    messages: []
+                };
+                currentChats.push(chat);
+            }
+
+            chat.messages.push({ sender: 'user', text, timestamp: DB.ts(), isBot: false });
+            input.value = '';
+
+            const botResponse = getBotResponse(text);
+            if (botResponse) {
+                setTimeout(() => {
+                    chat.messages.push({ sender: 'bot', text: botResponse, timestamp: DB.ts(), isBot: true });
+                    DB.setChats(currentChats);
+                    renderChat();
+                }, 300 + Math.random() * 400);
+            } else {
+                showToast('Message sent! Admin will respond shortly.', 'info');
+            }
+
+            DB.setChats(currentChats);
+            renderChat();
+        }
+
+        function getBotResponse(text) {
+            const lower = text.toLowerCase();
+            const responses = DB.getBotResponses();
+            for (const rule of responses) {
+                for (const kw of rule.keywords) {
+                    if (lower.includes(kw.toLowerCase())) {
+                        return rule.response;
+                    }
+                }
+            }
+            return null;
+        }
+
+        // ─── SEARCH / FILTER ───
+        searchInput.addEventListener('input', renderModGrid);
+        filterCategory.addEventListener('change', renderModGrid);
+        sortBy.addEventListener('change', renderModGrid);
+        resetFilters.addEventListener('click', () => {
+            searchInput.value = '';
+            filterCategory.value = 'all';
+            sortBy.value = 'newest';
+            renderModGrid();
+        });
+
+        // ════════════════════════════════════════════════════════════════════
+        //  SETTINGS ENGINE
+        // ════════════════════════════════════════════════════════════════════
+
+        function applySettingsToUI() {
+            const s = DB.getSettings();
+            settings = s;
+
+            // Background
+            const bgType = s.bgType || 'solid';
+            document.documentElement.style.setProperty('--bg-page', s.bgColor || '#0b0e1a');
+            document.documentElement.style.setProperty('--bg-gradient', s.bgGradient || 'none');
+            document.documentElement.style.setProperty('--bg-image', s.bgImage ? `url(${s.bgImage})` : 'none');
+            document.documentElement.style.setProperty('--bg-overlay', `rgba(11,14,26,${s.bgOverlay || 0.85})`);
+
+            // Accent
+            document.documentElement.style.setProperty('--accent', s.accentColor || '#ffd866');
+            document.documentElement.style.setProperty('--accent-dark', s.accentColor || '#f5a623');
+
+            // Card style
+            const cardStyle = s.cardStyle || 'glass';
+            document.querySelectorAll('.card, .mod-card, .chat-container, .filter-bar, .admin-stats .stat, .sub4unlock-area')
+                .forEach(el => {
+                    if (cardStyle === 'glass') {
+                        el.style.background = 'rgba(26,31,46,0.7)';
+                        el.style.backdropFilter = 'blur(12px)';
+                        el.style.webkitBackdropFilter = 'blur(12px)';
+                        el.style.border = '1px solid var(--border-color)';
+                    } else if (cardStyle === 'solid') {
+                        el.style.background = 'var(--bg-card)';
+                        el.style.backdropFilter = 'none';
+                        el.style.webkitBackdropFilter = 'none';
+                        el.style.border = '1px solid var(--border-color)';
+                    } else if (cardStyle === 'borderless') {
+                        el.style.background = 'transparent';
+                        el.style.backdropFilter = 'none';
+                        el.style.webkitBackdropFilter = 'none';
+                        el.style.border = 'none';
+                        el.style.boxShadow = 'none';
+                    }
+                });
+
+            // Animations
+            const anim = s.animations !== false;
+            document.querySelectorAll('.mod-card, .btn, .card, .toast, .chat-msg').forEach(el => {
+                el.style.transition = anim ? 'all var(--transition)' : 'none';
+            });
+            document.querySelectorAll('.mod-card').forEach(el => {
+                el.style.transform = anim ? '' : 'none';
+            });
+
+            // Update settings UI
+            $('#bgTypeSelect').value = bgType;
+            toggleBgOptions(bgType);
+            if (bgType === 'solid') {
+                document.querySelectorAll('.color-swatch').forEach(el => {
+                    el.classList.toggle('active', el.dataset.color === s.bgColor);
+                });
+                $('#bgCustomColor').value = s.bgColor || '#0b0e1a';
+            }
+            if (bgType === 'gradient') {
+                document.querySelectorAll('.bg-preview-grid .item').forEach(el => {
+                    el.classList.toggle('active', el.dataset.gradient === s.bgGradient);
+                });
+                $('#bgCustomGradient').value = s.bgGradient || '';
+            }
+            if (bgType === 'image') {
+                $('#bgImageUrl').value = s.bgImage || '';
+                $('#bgOverlayOpacity').value = s.bgOverlay || 0.85;
+            }
+
+            // Accent UI
+            document.querySelectorAll('.color-swatch[data-accent]').forEach(el => {
+                el.classList.toggle('active', el.dataset.accent === s.accentColor);
+            });
+            $('#accentCustomColor').value = s.accentColor || '#ffd866';
+
+            // Card style select
+            $('#cardStyleSelect').value = cardStyle;
+
+            // Animations checkbox
+            $('#animationsEnabled').checked = s.animations !== false;
+
+            // Update preview
+            updateBgPreview();
+        }
+
+        function toggleBgOptions(type) {
+            $('#bgSolidOptions').classList.toggle('hidden', type !== 'solid');
+            $('#bgGradientOptions').classList.toggle('hidden', type !== 'gradient');
+            $('#bgImageOptions').classList.toggle('hidden', type !== 'image');
+        }
+
+        function updateBgPreview() {
+            const s = DB.getSettings();
+            const wrap = $('#bgPreviewWrap');
+            wrap.style.background = s.bgColor || '#0b0e1a';
+            wrap.style.backgroundImage = s.bgGradient || 'none';
+            if (s.bgImage) {
+                wrap.style.backgroundImage += `, url(${s.bgImage})`;
+            }
+            wrap.style.backgroundSize = 'cover, cover';
+            wrap.style.backgroundPosition = 'center, center';
+        }
+
+        // ─── SETTINGS EVENTS ───
+
+        // Background type toggle
+        $('#bgTypeSelect').addEventListener('change', function() {
+            toggleBgOptions(this.value);
+        });
+
+        // Solid color swatches
+        document.querySelectorAll('.color-swatch[data-color]').forEach(el => {
+            el.addEventListener('click', function() {
+                document.querySelectorAll('.color-swatch[data-color]').forEach(s => s.classList.remove('active'));
+                this.classList.add('active');
+                $('#bgCustomColor').value = this.dataset.color;
+            });
+        });
+
+        // Custom color picker
+        $('#bgCustomColor').addEventListener('input', function() {
+            document.querySelectorAll('.color-swatch[data-color]').forEach(el => {
+                el.classList.toggle('active', el.dataset.color === this.value);
+            });
+        });
+
+        // Gradient presets
+        document.querySelectorAll('.bg-preview-grid .item').forEach(el => {
+            el.addEventListener('click', function() {
+                document.querySelectorAll('.bg-preview-grid .item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                $('#bgCustomGradient').value = this.dataset.gradient;
+            });
+        });
+
+        // Accent color swatches
+        document.querySelectorAll('.color-swatch[data-accent]').forEach(el => {
+            el.addEventListener('click', function() {
+                document.querySelectorAll('.color-swatch[data-accent]').forEach(s => s.classList.remove('active'));
+                this.classList.add('active');
+                $('#accentCustomColor').value = this.dataset.accent;
+            });
+        });
+
+        $('#accentCustomColor').addEventListener('input', function() {
+            document.querySelectorAll('.color-swatch[data-accent]').forEach(el => {
+                el.classList.toggle('active', el.dataset.accent === this.value);
+            });
+        });
+
+        // ─── APPLY BACKGROUND ───
+        $('#applyBgBtn').addEventListener('click', function() {
+            const type = $('#bgTypeSelect').value;
+            const s = DB.getSettings();
+
+            if (type === 'solid') {
+                const color = $('#bgCustomColor').value || '#0b0e1a';
+                s.bgType = 'solid';
+                s.bgColor = color;
+                s.bgGradient = 'none';
+                s.bgImage = '';
+            } else if (type === 'gradient') {
+                const grad = $('#bgCustomGradient').value.trim() || 'linear-gradient(135deg, #0b0e1a, #1a1f2e)';
+                s.bgType = 'gradient';
+                s.bgGradient = grad;
+                s.bgColor = '#0b0e1a';
+                s.bgImage = '';
+            } else if (type === 'image') {
+                const url = $('#bgImageUrl').value.trim();
+                const overlay = parseFloat($('#bgOverlayOpacity').value) || 0.85;
+                if (!url) { showToast('Please enter an image URL.', 'error'); return; }
+                s.bgType = 'image';
+                s.bgImage = url;
+                s.bgOverlay = overlay;
+                s.bgColor = '#0b0e1a';
+                s.bgGradient = 'none';
+            }
+
+            DB.setSettings(s);
+            settings = s;
+            applySettingsToUI();
+            showToast('Background applied!', 'success');
+        });
+
+        // ─── RESET BACKGROUND ───
+        $('#resetBgBtn').addEventListener('click', function() {
+            const defaultSettings = {
+                bgType: 'solid',
+                bgColor: '#0b0e1a',
+                bgGradient: 'none',
+                bgImage: '',
+                bgOverlay: 0.85,
+                accentColor: '#ffd866',
+                cardStyle: 'glass',
+                animations: true,
+            };
+            DB.setSettings(defaultSettings);
+            settings = defaultSettings;
+            applySettingsToUI();
+            showToast('Reset to default background.', 'info');
+        });
+
+        // ─── APPLY ACCENT ───
+        $('#applyAccentBtn').addEventListener('click', function() {
+            const color = $('#accentCustomColor').value || '#ffd866';
+            const s = DB.getSettings();
+            s.accentColor = color;
+            DB.setSettings(s);
+            settings = s;
+            applySettingsToUI();
+            showToast(`Accent color set to ${color}`, 'success');
+        });
+
+        // ─── SAVE PREFERENCES ───
+        $('#savePrefsBtn').addEventListener('click', function() {
+            const s = DB.getSettings();
+            s.cardStyle = $('#cardStyleSelect').value;
+            s.animations = $('#animationsEnabled').checked;
+            DB.setSettings(s);
+            settings = s;
+            applySettingsToUI();
+            showToast('Preferences saved!', 'success');
+        });
+
+        // ─── OVERLAY OPACITY LIVE UPDATE ───
+        $('#bgOverlayOpacity').addEventListener('input', function() {
+            const val = this.value;
+            document.documentElement.style.setProperty('--bg-overlay', `rgba(11,14,26,${val})`);
+        });
+
+        // ─── INIT ───
+        function init() {
+            if (DB.getMods().length === 0) {
+                seedSampleData();
+            }
+            if (DB.getUsers().length === 0) {
+                const defaultUsers = [
+                    { id: DB.genId(), username: 'admin', password: 'admin123', isAdmin: true, createdAt: DB.ts() },
+                    { id: DB.genId(), username: 'ishwar17', password: 'ishwar17', isAdmin: true, createdAt: DB.ts() },
+                    { id: DB.genId(), username: 'ishwar1212', password: 'ishwar1212', isAdmin: true,
+                    createdAt: DB.ts() },
+                ];
+                DB.setUsers(defaultUsers);
+                currentUsers = defaultUsers;
+            }
+            currentMods = DB.getMods();
+            currentChats = DB.getChats();
+            currentUsers = DB.getUsers();
+
+            // Apply settings on load
+            applySettingsToUI();
+
+            updateNav();
+            renderModGrid();
+
+            if (isAdmin() && pages.admin.classList.contains('active')) {
+                renderAdminPanel();
+            }
+
+            if (getCurrentUser()) {
+                if (pages.login.classList.contains('active') || pages.register.classList.contains('active')) {
+                    navigateTo('home');
+                }
+            }
+
+            console.log('🚀 WS Mod Menu Premium loaded!');
+            console.log(`📦 ${currentMods.length} mods, ${currentUsers.length} users`);
+            console.log('🎨 Settings:', settings);
+        }
+
+        // ─── SEED SAMPLE DATA ───
+        function seedSampleData() {
+            const sampleMods = [{
+                id: DB.genId(),
+                name: 'Super Speed Mod',
+                category: 'action',
+                description: 'Enhance your gameplay with unlimited speed and advanced features.',
+                version: '2.5.1',
+                fileSize: '45.2 MB',
+                compatibility: 'Android 7.0 and above',
+                installInstructions: 'Download the APK file, enable unknown sources in settings, and install.',
+                logo: '',
+                screenshots: [],
+                downloadSource: { type: 'link', value: 'https://drive.google.com/example' },
+                uploadDate: '2026-01-15T00:00:00.000Z',
+                realDownloads: 3456,
+                customDownloads: 15234,
+                realLikes: 312,
+                realDislikes: 28,
+                customLikes: 1245,
+                customDislikes: 89,
+                realRating: 4.3,
+                customRating: 4.5,
+                customSubscribers: 25678,
+                votes: { 1: 4, 2: 8, 3: 32, 4: 98, 5: 145 },
+                userVotes: {},
+                comments: [
+                    { id: DB.genId(), userId: 'user1', username: 'RealGamer123',
+                        text: 'This mod is fantastic! Works perfectly on my Samsung Galaxy S21',
+                        timestamp: '2026-01-16T10:00:00.000Z', isFake: false },
+                    { id: DB.genId(), userId: 'user2', username: 'SpeedDemon99',
+                        text: 'Love the speed boost feature, makes the game so much better',
+                        timestamp: '2026-01-17T14:30:00.000Z', isFake: false },
+                    { id: DB.genId(), userId: 'user3', username: 'AndroidUser456',
+                        text: 'Easy to install and no bugs so far, highly recommend',
+                        timestamp: '2026-01-18T09:15:00.000Z', isFake: false },
+                    { id: DB.genId(), userId: 'fake1', username: 'GameMaster99',
+                        text: 'Amazing mod! Works perfectly on my device!',
+                        timestamp: '2026-01-15T22:00:00.000Z', isFake: true },
+                    { id: DB.genId(), userId: 'fake2', username: 'ProGamer2024',
+                        text: 'Best mod I\'ve ever used, highly recommended',
+                        timestamp: '2026-01-16T08:30:00.000Z', isFake: true },
+                ],
+                sub4unlockLinks: [
+                    { id: DB.genId(), url: 'https://m.youtube.com/@w.s_mods', label: 'Subscribe on YouTube' },
+                ],
+            }, {
+                id: DB.genId(),
+                name: 'Unlimited Coins Mod',
+                category: 'casual',
+                description: 'Get unlimited coins and resources for your favorite games.',
+                version: '1.8.3',
+                fileSize: '32.7 MB',
+                compatibility: 'Android 6.0 and above',
+                installInstructions: 'Uninstall the original app, download and install this modded version.',
+                logo: '',
+                screenshots: [],
+                downloadSource: { type: 'file', value: 'unlimited_coins.apk' },
+                uploadDate: '2026-01-28T00:00:00.000Z',
+                realDownloads: 1892,
+                customDownloads: 8567,
+                realLikes: 178,
+                realDislikes: 34,
+                customLikes: 876,
+                customDislikes: 123,
+                realRating: 4.1,
+                customRating: 4.2,
+                customSubscribers: 25678,
+                votes: { 1: 2, 2: 6, 3: 18, 4: 58, 5: 72 },
+                userVotes: {},
+                comments: [
+                    { id: DB.genId(), userId: 'user4', username: 'CoinHunter88',
+                        text: 'Finally got unlimited coins! This is exactly what I needed',
+                        timestamp: '2026-01-29T11:00:00.000Z', isFake: false },
+                    { id: DB.genId(), userId: 'user5', username: 'CasualGamer2024',
+                        text: 'Works great on my Xiaomi phone, no issues',
+                        timestamp: '2026-01-30T16:20:00.000Z', isFake: false },
+                    { id: DB.genId(), userId: 'fake3', username: 'CoinCollector',
+                        text: 'Finally unlimited coins! This is awesome',
+                        timestamp: '2026-01-28T20:00:00.000Z', isFake: true },
+                ],
+                sub4unlockLinks: [
+                    { id: DB.genId(), url: 'https://m.youtube.com/@w.s_mods', label: 'Subscribe on YouTube' },
+                ],
+            }, {
+                id: DB.genId(),
+                name: 'God Mode Mod',
+                category: 'adventure',
+                description: 'Activate god mode with invincibility and unlimited health.',
+                version: '3.1.0',
+                fileSize: '58.9 MB',
+                compatibility: 'Android 8.0 and above',
+                installInstructions: 'Download, enable installation from unknown sources, and install the APK.',
+                logo: '',
+                screenshots: [],
+                downloadSource: { type: 'link', value: 'https://dropbox.com/example' },
+                uploadDate: '2026-02-05T00:00:00.000Z',
+                realDownloads: 2734,
+                customDownloads: 12891,
+                realLikes: 267,
+                realDislikes: 19,
+                customLikes: 1567,
+                customDislikes: 67,
+                realRating: 4.6,
+                customRating: 4.7,
+                customSubscribers: 25678,
+                votes: { 1: 1, 2: 3, 3: 14, 4: 67, 5: 128 },
+                userVotes: {},
+                comments: [
+                    { id: DB.genId(), userId: 'user6', username: 'AdventureKing',
+                        text: 'God mode is incredible! Makes difficult levels so much easier',
+                        timestamp: '2026-02-06T13:00:00.000Z', isFake: false },
+                    { id: DB.genId(), userId: 'user7', username: 'InvinciblePlayer',
+                        text: 'No more dying in boss fights, this mod is a lifesaver',
+                        timestamp: '2026-02-07T09:45:00.000Z', isFake: false },
+                    { id: DB.genId(), userId: 'fake4', username: 'AdventureSeeker',
+                        text: 'God mode is incredible, makes the game so much fun!',
+                        timestamp: '2026-02-05T18:00:00.000Z', isFake: true },
+                ],
+                sub4unlockLinks: [
+                    { id: DB.genId(), url: 'https://m.youtube.com/@w.s_mods', label: 'Subscribe on YouTube' },
+                ],
+            }];
+
+            DB.setMods(sampleMods);
+            currentMods = sampleMods;
+        }
+
+        // ─── START ───
+        init();
+
+        // ─── KEYBOARD SHORTCUTS ───
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                $('#modDetailModal').classList.add('hidden');
+                $('#uploadModal').classList.add('hidden');
+                $('#sub4Modal').classList.add('hidden');
+            }
+        });
+
+        // ─── RESPONSIVE ───
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                if (pages.home.classList.contains('active')) renderModGrid();
+            }, 300);
+        });
+
+        console.log('✅ WS Mod Menu Premium initialized successfully!');
+        console.log('🔑 Default admin: admin / admin123');
+        console.log('🎨 Go to Settings to customize your background!');
+    </script>
+</body>
+</html>
